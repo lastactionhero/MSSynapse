@@ -1,0 +1,162 @@
+{
+	"name": "nb_MovedPerson",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/45c9ec22-8136-4ebf-b81e-851aee3e0d2c/resourceGroups/rg_analytics/providers/Microsoft.Synapse/workspaces/unifiedsolution/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://unifiedsolution.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"dfprev = spark.read.load('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/part-1.json', format='json')\r\n",
+					"dfcur = spark.read.load('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/part-2.json', format='json')\r\n",
+					"dfprev = dfprev.select(['person_id','geocoordinate']).distinct()\r\n",
+					"dfcur =  dfcur.select(['person_id','geocoordinate']).distinct()"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql import Window\r\n",
+					"import pyspark.sql.functions as fn"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def get_distance( origin_lat, origin_long, dest_lat, dest_long):\r\n",
+					"    a = (\r\n",
+					"        fn.pow(fn.sin(fn.radians(dest_lat - origin_lat) / 2), 2) +\r\n",
+					"        fn.cos(fn.radians(origin_lat)) * fn.cos(fn.radians(dest_lat)) *\r\n",
+					"        fn.pow(fn.sin(fn.radians(dest_long - origin_long) / 2), 2))\r\n",
+					"    return (fn.atan2(fn.sqrt(a), fn.sqrt(-a + 1)) * 12742)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df= dfcur.union(dfprev).distinct()\r\n",
+					"dfmoved = df.groupBy('person_id').count().filter('count>1')\r\n",
+					"dfresult = df.join(dfmoved, how='inner', on='person_id').select(['person_id','geocoordinate'])\r\n",
+					"w = Window.partitionBy('person_id').orderBy('geocoordinate')\r\n",
+					"dfresult = dfresult.withColumn('order',fn.rank().over(w))\r\n",
+					"dfresult = dfresult.groupBy('person_id').pivot('order').agg(fn.first('geocoordinate'))\r\n",
+					"dfresult = dfresult.select(['person_id',fn.col('1.lat').cast('float').alias('s_lat')\r\n",
+					"                           ,fn.col('1.lon').cast('float').alias('s_lon')\r\n",
+					"                           ,fn.col('2.lat').cast('float').alias('d_lon')\r\n",
+					"                           ,fn.col('2.lon').cast('float').alias('d_lon')])\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dffinal.withColumn('distance', get_distance(fn.col('1.lat'),fn.col('1.lon'), fn.col('2.lat'),fn.col('2.lon') ))\\\r\n",
+					"            .select(['person_id','distance'])\\\r\n",
+					"            .write.format('parquet')\\\r\n",
+					"            .mode(saveMode='overwrite')\\\r\n",
+					"            .save('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Processed/moved')"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

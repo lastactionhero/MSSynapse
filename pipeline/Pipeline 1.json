@@ -1,0 +1,45 @@
+{
+	"name": "Pipeline 1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook 2",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "nb_MovedPerson",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"basepath": {
+							"value": "abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/",
+							"type": "string"
+						},
+						"prevfile": {
+							"value": "part-1.json",
+							"type": "string"
+						},
+						"curfile": {
+							"value": "part-2.json",
+							"type": "string"
+						},
+						"": {
+							"value": ""
+						}
+					},
+					"snapshot": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
