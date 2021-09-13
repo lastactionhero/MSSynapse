@@ -1,0 +1,372 @@
+{
+	"name": "CopyPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_iui",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "fsrealestate/Raw/part-1.json"
+					},
+					{
+						"name": "Destination",
+						"value": "fsrealestate/Staged/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": true
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['cbsa_code']"
+								},
+								"sink": {
+									"ordinal": 1
+								}
+							},
+							{
+								"source": {
+									"path": "$['credit_card_count']"
+								},
+								"sink": {
+									"ordinal": 2
+								}
+							},
+							{
+								"source": {
+									"path": "$['delivery_point_bar_code']"
+								},
+								"sink": {
+									"ordinal": 3
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_head_of_family']"
+								},
+								"sink": {
+									"ordinal": 4
+								}
+							},
+							{
+								"source": {
+									"path": "$['family_id']"
+								},
+								"sink": {
+									"ordinal": 5
+								}
+							},
+							{
+								"source": {
+									"path": "$['fips_code']"
+								},
+								"sink": {
+									"ordinal": 6
+								}
+							},
+							{
+								"source": {
+									"path": "$['geocoordinate']['lat']"
+								},
+								"sink": {
+									"ordinal": 7
+								}
+							},
+							{
+								"source": {
+									"path": "$['geocoordinate']['lon']"
+								},
+								"sink": {
+									"ordinal": 8
+								}
+							},
+							{
+								"source": {
+									"path": "$['mailing_score_code']"
+								},
+								"sink": {
+									"ordinal": 9
+								}
+							},
+							{
+								"source": {
+									"path": "$['mortgage']['created_at']"
+								},
+								"sink": {
+									"ordinal": 10
+								}
+							},
+							{
+								"source": {
+									"path": "$['mortgage']['id']"
+								},
+								"sink": {
+									"ordinal": 11
+								}
+							},
+							{
+								"source": {
+									"path": "$['mortgage']['estimated_home_equity'][0]"
+								},
+								"sink": {
+									"ordinal": 12
+								}
+							},
+							{
+								"source": {
+									"path": "$['multi_family']"
+								},
+								"sink": {
+									"ordinal": 13
+								}
+							},
+							{
+								"source": {
+									"path": "$['person_id']"
+								},
+								"sink": {
+									"ordinal": 14
+								}
+							},
+							{
+								"source": {
+									"path": "$['registered_voter']"
+								},
+								"sink": {
+									"ordinal": 15
+								}
+							},
+							{
+								"source": {
+									"path": "$['state']"
+								},
+								"sink": {
+									"ordinal": 16
+								}
+							},
+							{
+								"source": {
+									"path": "$['street']"
+								},
+								"sink": {
+									"ordinal": 17
+								}
+							},
+							{
+								"source": {
+									"path": "$['zip']"
+								},
+								"sink": {
+									"ordinal": 18
+								}
+							},
+							{
+								"source": {
+									"path": "$['adult_count']"
+								},
+								"sink": {
+									"ordinal": 19
+								}
+							},
+							{
+								"source": {
+									"path": "$['appeared_on']"
+								},
+								"sink": {
+									"ordinal": 20
+								}
+							},
+							{
+								"source": {
+									"path": "$['confirmed_on']"
+								},
+								"sink": {
+									"ordinal": 21
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_appeared_on'][0]"
+								},
+								"sink": {
+									"ordinal": 22
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_credit_card_revolver']"
+								},
+								"sink": {
+									"ordinal": 23
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_disposable_income']"
+								},
+								"sink": {
+									"ordinal": 24
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_education_level']"
+								},
+								"sink": {
+									"ordinal": 25
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_home_owner']"
+								},
+								"sink": {
+									"ordinal": 26
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_income']"
+								},
+								"sink": {
+									"ordinal": 27
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_liquid_assets'][0]"
+								},
+								"sink": {
+									"ordinal": 28
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_vacation_expenses'][0]"
+								},
+								"sink": {
+									"ordinal": 29
+								}
+							},
+							{
+								"source": {
+									"path": "$['estimated_wealth'][0]"
+								},
+								"sink": {
+									"ordinal": 30
+								}
+							},
+							{
+								"source": {
+									"path": "$['mail_offer_frequency'][0]"
+								},
+								"sink": {
+									"ordinal": 31
+								}
+							},
+							{
+								"source": {
+									"path": "$['mail_purchases']"
+								},
+								"sink": {
+									"ordinal": 32
+								}
+							},
+							{
+								"source": {
+									"path": "$['member_count']"
+								},
+								"sink": {
+									"ordinal": 33
+								}
+							},
+							{
+								"source": {
+									"path": "$['potential_investor']"
+								},
+								"sink": {
+									"ordinal": 34
+								}
+							},
+							{
+								"source": {
+									"path": "$['primary']"
+								},
+								"sink": {
+									"ordinal": 35
+								}
+							},
+							{
+								"source": {
+									"path": "$['gender']"
+								},
+								"sink": {
+									"ordinal": 36
+								}
+							},
+							{
+								"source": {
+									"path": "$['credit_card_types_count']"
+								},
+								"sink": {
+									"ordinal": 37
+								}
+							}
+						],
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_iui",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_iui",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-09-12T15:42:33Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

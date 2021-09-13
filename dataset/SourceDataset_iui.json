@@ -1,0 +1,162 @@
+{
+	"name": "SourceDataset_iui",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "unifiedsolution-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "part-1.json",
+				"folderPath": "Raw",
+				"fileSystem": "fsrealestate"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"cbsa_code": {
+					"type": "string"
+				},
+				"credit_card_count": {
+					"type": "integer"
+				},
+				"delivery_point_bar_code": {
+					"type": "string"
+				},
+				"estimated_head_of_family": {
+					"type": "boolean"
+				},
+				"family_id": {
+					"type": "string"
+				},
+				"fips_code": {
+					"type": "string"
+				},
+				"geocoordinate": {
+					"type": "object",
+					"properties": {
+						"lat": {
+							"type": "number"
+						},
+						"lon": {
+							"type": "number"
+						}
+					}
+				},
+				"mailing_score_code": {
+					"type": "string"
+				},
+				"mortgage": {
+					"type": "object",
+					"properties": {
+						"created_at": {
+							"type": "string"
+						},
+						"id": "{\r\n  \"type\": \"string\"\r\n}",
+						"estimated_home_equity": {
+							"type": "array",
+							"items": {
+								"type": "integer"
+							}
+						}
+					}
+				},
+				"multi_family": {
+					"type": "boolean"
+				},
+				"person_id": {
+					"type": "string"
+				},
+				"registered_voter": {
+					"type": "boolean"
+				},
+				"state": {
+					"type": "string"
+				},
+				"street": {
+					"type": "string"
+				},
+				"zip": {
+					"type": "string"
+				},
+				"adult_count": {
+					"type": "integer"
+				},
+				"appeared_on": {
+					"type": "string"
+				},
+				"confirmed_on": {
+					"type": "string"
+				},
+				"estimated_appeared_on": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"estimated_credit_card_revolver": {
+					"type": "boolean"
+				},
+				"estimated_disposable_income": {
+					"type": "integer"
+				},
+				"estimated_education_level": {
+					"type": "string"
+				},
+				"estimated_home_owner": {
+					"type": "boolean"
+				},
+				"estimated_income": {
+					"type": "integer"
+				},
+				"estimated_liquid_assets": {
+					"type": "array",
+					"items": {
+						"type": "integer"
+					}
+				},
+				"estimated_vacation_expenses": {
+					"type": "array",
+					"items": {
+						"type": "integer"
+					}
+				},
+				"estimated_wealth": {
+					"type": "array",
+					"items": {
+						"type": "integer"
+					}
+				},
+				"mail_offer_frequency": {
+					"type": "array",
+					"items": {
+						"type": "integer"
+					}
+				},
+				"mail_purchases": {
+					"type": "boolean"
+				},
+				"member_count": {
+					"type": "integer"
+				},
+				"potential_investor": {
+					"type": "boolean"
+				},
+				"primary": {
+					"type": "boolean"
+				},
+				"gender": {
+					"type": "string"
+				},
+				"credit_card_types_count": {
+					"type": "integer"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
