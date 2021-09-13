@@ -151,7 +151,7 @@
 				"source": [
 					"dffinal.withColumn('distance', get_distance(fn.col('1.lat'),fn.col('1.lon'), fn.col('2.lat'),fn.col('2.lon') ))\\\r\n",
 					"            .select(['person_id','distance'])\\\r\n",
-					"            .write.format('parquet')\\\r\n",
+					"            .write.format('json')\\\r\n",
 					"            .mode(saveMode='overwrite')\\\r\n",
 					"            .save('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Processed/moved')"
 				],
