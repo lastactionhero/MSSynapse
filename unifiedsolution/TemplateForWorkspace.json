@@ -1,0 +1,1231 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "unifiedsolution"
+		},
+		"unifiedsolution-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'unifiedsolution-WorkspaceDefaultSqlServer'"
+		},
+		"unifiedsolution-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dlunifiedsolution.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/CopyPipeline')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_iui",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "fsrealestate/Raw/part-1.json"
+							},
+							{
+								"name": "Destination",
+								"value": "fsrealestate/Staged/"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": true
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['cbsa_code']"
+										},
+										"sink": {
+											"ordinal": 1
+										}
+									},
+									{
+										"source": {
+											"path": "$['credit_card_count']"
+										},
+										"sink": {
+											"ordinal": 2
+										}
+									},
+									{
+										"source": {
+											"path": "$['delivery_point_bar_code']"
+										},
+										"sink": {
+											"ordinal": 3
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_head_of_family']"
+										},
+										"sink": {
+											"ordinal": 4
+										}
+									},
+									{
+										"source": {
+											"path": "$['family_id']"
+										},
+										"sink": {
+											"ordinal": 5
+										}
+									},
+									{
+										"source": {
+											"path": "$['fips_code']"
+										},
+										"sink": {
+											"ordinal": 6
+										}
+									},
+									{
+										"source": {
+											"path": "$['geocoordinate']['lat']"
+										},
+										"sink": {
+											"ordinal": 7
+										}
+									},
+									{
+										"source": {
+											"path": "$['geocoordinate']['lon']"
+										},
+										"sink": {
+											"ordinal": 8
+										}
+									},
+									{
+										"source": {
+											"path": "$['mailing_score_code']"
+										},
+										"sink": {
+											"ordinal": 9
+										}
+									},
+									{
+										"source": {
+											"path": "$['mortgage']['created_at']"
+										},
+										"sink": {
+											"ordinal": 10
+										}
+									},
+									{
+										"source": {
+											"path": "$['mortgage']['id']"
+										},
+										"sink": {
+											"ordinal": 11
+										}
+									},
+									{
+										"source": {
+											"path": "$['mortgage']['estimated_home_equity'][0]"
+										},
+										"sink": {
+											"ordinal": 12
+										}
+									},
+									{
+										"source": {
+											"path": "$['multi_family']"
+										},
+										"sink": {
+											"ordinal": 13
+										}
+									},
+									{
+										"source": {
+											"path": "$['person_id']"
+										},
+										"sink": {
+											"ordinal": 14
+										}
+									},
+									{
+										"source": {
+											"path": "$['registered_voter']"
+										},
+										"sink": {
+											"ordinal": 15
+										}
+									},
+									{
+										"source": {
+											"path": "$['state']"
+										},
+										"sink": {
+											"ordinal": 16
+										}
+									},
+									{
+										"source": {
+											"path": "$['street']"
+										},
+										"sink": {
+											"ordinal": 17
+										}
+									},
+									{
+										"source": {
+											"path": "$['zip']"
+										},
+										"sink": {
+											"ordinal": 18
+										}
+									},
+									{
+										"source": {
+											"path": "$['adult_count']"
+										},
+										"sink": {
+											"ordinal": 19
+										}
+									},
+									{
+										"source": {
+											"path": "$['appeared_on']"
+										},
+										"sink": {
+											"ordinal": 20
+										}
+									},
+									{
+										"source": {
+											"path": "$['confirmed_on']"
+										},
+										"sink": {
+											"ordinal": 21
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_appeared_on'][0]"
+										},
+										"sink": {
+											"ordinal": 22
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_credit_card_revolver']"
+										},
+										"sink": {
+											"ordinal": 23
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_disposable_income']"
+										},
+										"sink": {
+											"ordinal": 24
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_education_level']"
+										},
+										"sink": {
+											"ordinal": 25
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_home_owner']"
+										},
+										"sink": {
+											"ordinal": 26
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_income']"
+										},
+										"sink": {
+											"ordinal": 27
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_liquid_assets'][0]"
+										},
+										"sink": {
+											"ordinal": 28
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_vacation_expenses'][0]"
+										},
+										"sink": {
+											"ordinal": 29
+										}
+									},
+									{
+										"source": {
+											"path": "$['estimated_wealth'][0]"
+										},
+										"sink": {
+											"ordinal": 30
+										}
+									},
+									{
+										"source": {
+											"path": "$['mail_offer_frequency'][0]"
+										},
+										"sink": {
+											"ordinal": 31
+										}
+									},
+									{
+										"source": {
+											"path": "$['mail_purchases']"
+										},
+										"sink": {
+											"ordinal": 32
+										}
+									},
+									{
+										"source": {
+											"path": "$['member_count']"
+										},
+										"sink": {
+											"ordinal": 33
+										}
+									},
+									{
+										"source": {
+											"path": "$['potential_investor']"
+										},
+										"sink": {
+											"ordinal": 34
+										}
+									},
+									{
+										"source": {
+											"path": "$['primary']"
+										},
+										"sink": {
+											"ordinal": 35
+										}
+									},
+									{
+										"source": {
+											"path": "$['gender']"
+										},
+										"sink": {
+											"ordinal": 36
+										}
+									},
+									{
+										"source": {
+											"path": "$['credit_card_types_count']"
+										},
+										"sink": {
+											"ordinal": 37
+										}
+									}
+								],
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_iui",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_iui",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-09-12T15:42:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/SourceDataset_iui')]",
+				"[concat(variables('workspaceId'), '/datasets/DestinationDataset_iui')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ppl_person_movement')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "nb_MovedPerson",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "nb_MovedPerson",
+								"type": "NotebookReference"
+							},
+							"snapshot": true
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/nb_MovedPerson')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_iui')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "unifiedsolution-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Staged",
+						"fileSystem": "fsrealestate"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/unifiedsolution-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SourceDataset_iui')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "unifiedsolution-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "part-1.json",
+						"folderPath": "Raw",
+						"fileSystem": "fsrealestate"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"cbsa_code": {
+							"type": "string"
+						},
+						"credit_card_count": {
+							"type": "integer"
+						},
+						"delivery_point_bar_code": {
+							"type": "string"
+						},
+						"estimated_head_of_family": {
+							"type": "boolean"
+						},
+						"family_id": {
+							"type": "string"
+						},
+						"fips_code": {
+							"type": "string"
+						},
+						"geocoordinate": {
+							"type": "object",
+							"properties": {
+								"lat": {
+									"type": "number"
+								},
+								"lon": {
+									"type": "number"
+								}
+							}
+						},
+						"mailing_score_code": {
+							"type": "string"
+						},
+						"mortgage": {
+							"type": "object",
+							"properties": {
+								"created_at": {
+									"type": "string"
+								},
+								"id": "{\r\n  \"type\": \"string\"\r\n}",
+								"estimated_home_equity": {
+									"type": "array",
+									"items": {
+										"type": "integer"
+									}
+								}
+							}
+						},
+						"multi_family": {
+							"type": "boolean"
+						},
+						"person_id": {
+							"type": "string"
+						},
+						"registered_voter": {
+							"type": "boolean"
+						},
+						"state": {
+							"type": "string"
+						},
+						"street": {
+							"type": "string"
+						},
+						"zip": {
+							"type": "string"
+						},
+						"adult_count": {
+							"type": "integer"
+						},
+						"appeared_on": {
+							"type": "string"
+						},
+						"confirmed_on": {
+							"type": "string"
+						},
+						"estimated_appeared_on": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"estimated_credit_card_revolver": {
+							"type": "boolean"
+						},
+						"estimated_disposable_income": {
+							"type": "integer"
+						},
+						"estimated_education_level": {
+							"type": "string"
+						},
+						"estimated_home_owner": {
+							"type": "boolean"
+						},
+						"estimated_income": {
+							"type": "integer"
+						},
+						"estimated_liquid_assets": {
+							"type": "array",
+							"items": {
+								"type": "integer"
+							}
+						},
+						"estimated_vacation_expenses": {
+							"type": "array",
+							"items": {
+								"type": "integer"
+							}
+						},
+						"estimated_wealth": {
+							"type": "array",
+							"items": {
+								"type": "integer"
+							}
+						},
+						"mail_offer_frequency": {
+							"type": "array",
+							"items": {
+								"type": "integer"
+							}
+						},
+						"mail_purchases": {
+							"type": "boolean"
+						},
+						"member_count": {
+							"type": "integer"
+						},
+						"potential_investor": {
+							"type": "boolean"
+						},
+						"primary": {
+							"type": "boolean"
+						},
+						"gender": {
+							"type": "string"
+						},
+						"credit_card_types_count": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/unifiedsolution-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/unifiedsolution-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('unifiedsolution-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/unifiedsolution-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('unifiedsolution-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 1')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/45c9ec22-8136-4ebf-b81e-851aee3e0d2c/resourceGroups/rg_analytics/providers/Microsoft.Synapse/workspaces/unifiedsolution/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://unifiedsolution.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 8,
+						"memory": 56
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"dfprev = spark.read.load('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/part-1.json', format='json')\r\n",
+							"dfcur = spark.read.load('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/part-2.json', format='json')\r\n",
+							"dfprev = dfprev.select(['person_id','geocoordinate']).distinct()\r\n",
+							"dfcur =  dfcur.select(['person_id','geocoordinate']).distinct()\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql import Window\r\n",
+							"import pyspark.sql.functions as fn"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df= dfcur.union(dfprev).distinct()"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"dfmoved = df.groupBy('person_id').count().filter('count>1')"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(dfmoved)"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df.filter('person_id == 202775139349'))"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"dfresult = df.join(dfmoved, how='inner', on='person_id').select(['person_id','geocoordinate'])"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(dfresult)"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"w = Window.partitionBy('person_id').orderBy('geocoordinate')\r\n",
+							"dfrank = dfresult.withColumn('order',fn.rank().over(w))\r\n",
+							"display(dfrank)"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"dffinal = dfrank.groupBy('person_id').pivot('order').agg(fn.first('geocoordinate'))\r\n",
+							"display(dffinal)"
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"\r\n",
+							"dfdetails = dffinal.select(['person_id',fn.col('1.lat').cast('float').alias('s_lat')\r\n",
+							"                           ,fn.col('1.lon').cast('float').alias('s_lon')\r\n",
+							"                           ,fn.col('2.lat').cast('float').alias('d_lon')\r\n",
+							"                           ,fn.col('2.lon').cast('float').alias('d_lon')])\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 66
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_distance( origin_lat, origin_long):\r\n",
+							"    return origin_lat+ origin_long"
+						],
+						"outputs": [],
+						"execution_count": 69
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_distance( origin_lat, origin_long, dest_lat, dest_long):\r\n",
+							"    a = (\r\n",
+							"        fn.pow(fn.sin(fn.radians(dest_lat - origin_lat) / 2), 2) +\r\n",
+							"        fn.cos(fn.radians(origin_lat)) * fn.cos(fn.radians(dest_lat)) *\r\n",
+							"        fn.pow(fn.sin(fn.radians(dest_long - origin_long) / 2), 2))\r\n",
+							"    return (fn.atan2(fn.sqrt(a), fn.sqrt(-a + 1)) * 12742)"
+						],
+						"outputs": [],
+						"execution_count": 73
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"dffinal.withColumn('distance', get_distance(fn.col('1.lat'),fn.col('1.lon'), fn.col('2.lat'),fn.col('2.lon') ))\\\r\n",
+							"            .select(['person_id','distance'])\\\r\n",
+							"            .write.format('parquet')\\\r\n",
+							"            .mode(saveMode='overwrite')\\\r\n",
+							"            .save('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Processed/moved')"
+						],
+						"outputs": [],
+						"execution_count": 81
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/nb_MovedPerson')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/45c9ec22-8136-4ebf-b81e-851aee3e0d2c/resourceGroups/rg_analytics/providers/Microsoft.Synapse/workspaces/unifiedsolution/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://unifiedsolution.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 10,
+						"cores": 8,
+						"memory": 56
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"dfprev = spark.read.load('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/part-1.json', format='json')\r\n",
+							"dfcur = spark.read.load('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Raw/part-2.json', format='json')\r\n",
+							"dfprev = dfprev.select(['person_id','geocoordinate']).distinct()\r\n",
+							"dfcur =  dfcur.select(['person_id','geocoordinate']).distinct()"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql import Window\r\n",
+							"import pyspark.sql.functions as fn"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_distance( origin_lat, origin_long, dest_lat, dest_long):\r\n",
+							"    a = (\r\n",
+							"        fn.pow(fn.sin(fn.radians(dest_lat - origin_lat) / 2), 2) +\r\n",
+							"        fn.cos(fn.radians(origin_lat)) * fn.cos(fn.radians(dest_lat)) *\r\n",
+							"        fn.pow(fn.sin(fn.radians(dest_long - origin_long) / 2), 2))\r\n",
+							"    return (fn.atan2(fn.sqrt(a), fn.sqrt(-a + 1)) * 12742)"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df= dfcur.union(dfprev).distinct()\r\n",
+							"dfmoved = df.groupBy('person_id').count().filter('count>1')\r\n",
+							"dfresult = df.join(dfmoved, how='inner', on='person_id').select(['person_id','geocoordinate'])\r\n",
+							"w = Window.partitionBy('person_id').orderBy('geocoordinate')\r\n",
+							"dfresult = dfresult.withColumn('order',fn.rank().over(w))\r\n",
+							"dfresult = dfresult.groupBy('person_id').pivot('order').agg(fn.first('geocoordinate'))\r\n",
+							"dfresult = dfresult.select(['person_id',fn.col('1.lat').cast('float').alias('s_lat')\r\n",
+							"                           ,fn.col('1.lon').cast('float').alias('s_lon')\r\n",
+							"                           ,fn.col('2.lat').cast('float').alias('d_lon')\r\n",
+							"                           ,fn.col('2.lon').cast('float').alias('d_lon')])\r\n",
+							"\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"dffinal.withColumn('distance', get_distance(fn.col('1.lat'),fn.col('1.lon'), fn.col('2.lat'),fn.col('2.lon') ))\\\r\n",
+							"            .select(['person_id','distance'])\\\r\n",
+							"            .write.format('json')\\\r\n",
+							"            .mode(saveMode='overwrite')\\\r\n",
+							"            .save('abfss://fsrealestate@dlunifiedsolution.dfs.core.windows.net/Processed/moved')"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		}
+	]
+}
